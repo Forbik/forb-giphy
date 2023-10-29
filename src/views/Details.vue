@@ -2,14 +2,20 @@
   <v-container v-if="!isLoading && gifData">
     <v-row>
       <v-col cols="12">
+        <v-btn variant="text" class="mb-4" @click="$router.go(-1)">
+          <v-icon  large class="mr-2">mdi-arrow-left</v-icon>
+
+          Back
+        </v-btn>
         <h2>{{ gifData.title }}</h2>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <div style="height: 573px;">
-          <v-img :src="gifData.images.original.url" />
-        </div>
+        <GifCardComponent
+          :gif="gifData"
+          original
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -39,35 +45,33 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import { useGifStore } from '../store/giphy'
+  import type { Gif } from './../store/giphy'
 
   import Slider from './../components/Slider.vue'
-
-  interface GifData {
-    title: string,
-    user: {
-      display_name: string,
-      username: string
-    },
-    images: {
-      original: {
-        url: string
-      }
-    }
-  }
+  import GifCardComponent from '@/components/GifCardComponent.vue'
 
   const gifStore = useGifStore()
   const route = useRoute()
   const isLoading = ref(true)
   const gifId = route.params.id.toString()
-  const gifData = ref<GifData | undefined>(undefined)
+  const gifData = ref<Gif | undefined>(undefined)
+
+  watch(
+    () => route.params.id,
+    async (newValue) => {
+      if (!newValue) { return }
+      gifData.value = (await gifStore.fetchGifById(newValue as string)) as unknown as Gif
+    },
+    { immediate: true }
+  )
 
   onMounted(async () => {
     isLoading.value = true
-    gifStore.getGifById(gifId).then((data: any[] | undefined) => {
-      gifData.value = data as unknown as GifData
+    gifStore.fetchGifById(gifId).then((data: any[] | undefined) => {
+      gifData.value = data as unknown as Gif
     }).catch((error) => {
       console.error('Error fetching gif details: ', error)
     }).finally(() => {

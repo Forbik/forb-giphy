@@ -10,7 +10,9 @@
         lg="3"
       >
         <router-link :to="`/details/${gif.id}`">
-          <div :alt="gif.title" :style="`background: center / cover no-repeat url(${gif.images.fixed_height.url}); width: 100%; height: 170px;`"></div>
+          <GifCardComponent
+            :gif="gif"
+          />
         </router-link>
       </v-col>
     </v-row>
@@ -23,6 +25,7 @@
 <script lang="ts" setup>
   import { ref, computed, watch, onMounted } from 'vue'
   import { useGifStore } from '../store/giphy'
+import GifCardComponent from './GifCardComponent.vue';
 
   const gifStore = useGifStore()
   const gifs = ref(gifStore.gifs)
@@ -32,10 +35,10 @@
     set: (value) => gifStore.setSearchQuery(value)
   })
   onMounted(() => {
-    gifStore.fetchGifs('trending')
+    gifStore.fetchTrandingGifs()
     window.addEventListener('scroll', handleScroll)
     watch (gifStore, (newVal) => {
-      gifs.value = newVal.gifs;
+      gifs.value = newVal.gifs
     })
   })
   const handleScroll = () => {
@@ -45,9 +48,13 @@
       if (!isFetching.value) {
         isFetching.value = true
         setTimeout(() => {
-          gifStore.loadMore(searchQuery.value || `trending`)
+          if (searchQuery.value && searchQuery.value.length > 0) {
+            gifStore.searchGifs(searchQuery.value)
+          } else {
+            gifStore.loadMore()
+          }
           isFetching.value = false
-        }, 500);
+        }, 800)
       }
     }
   }
