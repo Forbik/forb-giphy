@@ -43,16 +43,16 @@
   const handleSearch = debounce((query: string) => {
     if (query && searchQuery.value.length > 0) {
       gifStore.setSearchQuery(searchQuery.value)
-      gifStore.fetchGifs(searchQuery.value)
+      gifStore.searchGifs(searchQuery.value)
     } else {
-      gifStore.fetchGifs('trending')
+      gifStore.fetchTrandingGifs()
     }
   }, 500)
   watch(() => gifStore.searchQuery, (newValue) => {
     searchQuery.value = newValue
   })
   const clearSearchQuery = () => {
-    gifStore.fetchGifs('trending')
+    gifStore.fetchTrandingGifs()
     return gifStore.setSearchQuery('')
   }
 </script>

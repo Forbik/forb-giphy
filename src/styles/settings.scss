@@ -1,10 +1,12 @@
-/**
- * src/styles/settings.scss
- *
- * Configures SASS variables and Vuetify overwrites
- */
+.skeleton {
+  animation: skeleton-loading .8s linear infinite alternate;
+}
 
-// https://vuetifyjs.com/features/sass-variables/`
-// @use 'vuetify/settings' with (
-//   $color-pack: false
-// );
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(0, 0%, 80%);
+  }
+  100% {
+    background-color: hsl(0, 0%, 93%);
+  }
+}
