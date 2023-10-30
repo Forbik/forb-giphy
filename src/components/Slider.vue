@@ -7,7 +7,7 @@
           <v-col cols="12">
             <v-slide-group v-model="model" show-arrows center-active>
               <v-slide-group-item v-for="randomGif in randomGifs" :key="randomGif.id">
-                <v-card width="300" :to="`/details/${randomGif.id}`">
+                <v-card flat width="300" :to="`/details/${randomGif.id}`">
                   <router-link :to="`/details/${randomGif.id}`">
                     <GifCardComponent class="mx-2 min-width: 170px;" :gif="randomGif" />
                   </router-link>

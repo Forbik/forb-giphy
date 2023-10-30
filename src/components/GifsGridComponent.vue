@@ -5,7 +5,7 @@
         v-for="(gif, index) in gifs"
         :key="index"
         cols="12"
-        sm="12"
+        sm="6"
         md="4"
         lg="3"
       >
@@ -25,15 +25,19 @@
 <script lang="ts" setup>
   import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
   import { useGifStore } from '../store/giphy'
-import GifCardComponent from './GifCardComponent.vue';
+
+  import GifCardComponent from './GifCardComponent.vue';
 
   const gifStore = useGifStore()
   const gifs = ref(gifStore.gifs)
   const isFetching = ref(false)
+  let timeoutId: ReturnType<typeof setTimeout>
+
   const searchQuery = computed({
     get: () => gifStore.searchQuery,
     set: (value) => gifStore.setSearchQuery(value)
   })
+
   onMounted(() => {
     gifStore.fetchTrandingGifs()
     window.addEventListener('scroll', handleScroll)
@@ -41,17 +45,15 @@ import GifCardComponent from './GifCardComponent.vue';
       gifs.value = newVal.gifs
     })
   })
-  onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll);
-  })
+
   const handleScroll = () => {
     if (
       window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 500 && !isFetching.value
     ) {
-      console.log('handleScroll')
       if (!isFetching.value) {
         isFetching.value = true
-        setTimeout(() => {
+        clearTimeout(timeoutId)
+        timeoutId = setTimeout(() => {
           if (searchQuery.value && searchQuery.value.length > 0) {
             gifStore.searchGifs(searchQuery.value)
           } else {
@@ -62,4 +64,9 @@ import GifCardComponent from './GifCardComponent.vue';
       }
     }
   }
+
+  onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
+    clearTimeout(timeoutId)
+  })
 </script>
