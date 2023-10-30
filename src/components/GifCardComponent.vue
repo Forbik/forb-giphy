@@ -44,13 +44,17 @@
   </div>
 </template>
 <script lang="ts" setup>
-  import { ref } from 'vue'
+  import { ref, onUnmounted } from 'vue'
   import type { Gif } from './../store/giphy'
+
   defineProps<{
     gif: Gif,
     original?: boolean
   }>()
+
   const isShare = ref(false)
+  let timeoutId: ReturnType<typeof setTimeout>
+
   async function shareLink (gif: Gif) {
   if (navigator.share) {
     await navigator
@@ -78,11 +82,17 @@
       }
     )
   }
+
   const setShareBehavior = () => {
     isShare.value = true
-    setTimeout(() => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => {
       isShare.value = false
     }, 2000)
   }
+
+  onUnmounted(() => {
+    clearTimeout(timeoutId)
+  })
 }
 </script>

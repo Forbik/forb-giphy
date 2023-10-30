@@ -2,11 +2,6 @@
   <v-container v-if="!isLoading && gifData">
     <v-row>
       <v-col cols="12">
-        <v-btn variant="text" class="mb-4" @click="$router.go(-1)">
-          <v-icon  large class="mr-2">mdi-arrow-left</v-icon>
-
-          Back
-        </v-btn>
         <h2>{{ gifData.title }}</h2>
       </v-col>
     </v-row>
