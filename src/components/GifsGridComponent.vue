@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, computed, watch, onMounted } from 'vue'
+  import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
   import { useGifStore } from '../store/giphy'
 import GifCardComponent from './GifCardComponent.vue';
 
@@ -41,10 +41,14 @@ import GifCardComponent from './GifCardComponent.vue';
       gifs.value = newVal.gifs
     })
   })
+  onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+  })
   const handleScroll = () => {
     if (
-      window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 300 && !isFetching.value
+      window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 500 && !isFetching.value
     ) {
+      console.log('handleScroll')
       if (!isFetching.value) {
         isFetching.value = true
         setTimeout(() => {

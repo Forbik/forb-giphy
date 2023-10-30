@@ -9,8 +9,7 @@
       :src="gif.images.original.url"
     >
       <template v-slot:placeholder>
-        <div class="d-flex align-center justify-center fill-height">
-          <v-progress-circular color="black" indeterminate></v-progress-circular>
+        <div class="d-flex align-center justify-center fill-height skeleton" style="opacity: 0.5;">
         </div>
       </template>
     </v-img>
@@ -18,8 +17,22 @@
       v-else
       class="skeleton"
       :alt="gif.title"
-      :style="`background: center / cover no-repeat url(${gif.images.fixed_height.url});width: 100%; height: 170px;background-color: #f1f1f1;`"
-    ></div>
+      :style="`width: 100%; height: 170px;background-color: #f1f1f1;`"
+    >
+      <v-img
+        class="mx-auto"
+        max-width="100%"
+        height="100%"
+        cover
+        :lazy-src="gif.images.fixed_height_still.url"
+        :src="gif.images.original.url"
+      >
+      <template v-slot:placeholder>
+        <div class="d-flex align-center justify-center fill-height skeleton" style="opacity: 0.5;">
+        </div>
+      </template>
+      </v-img>
+    </div>
     <v-btn
       :color="isShare ? `success` : `white`"
       size="x-small"

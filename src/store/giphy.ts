@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 const apiKey: string = import.meta.env.VITE_API_KEY
-const apiUrl: string = 'https://api.giphy.com/v1/gifs'
+const apiUrl: string = import.meta.env.VITE_API_URL
 
 type AdditionalParams = {
   [key: string]: string | number;
