@@ -39,7 +39,11 @@
   })
 
   onMounted(() => {
-    gifStore.fetchTrandingGifs()
+    if (searchQuery.value && searchQuery.value.length > 0) {
+      gifStore.searchGifs(searchQuery.value)
+    } else {
+      gifStore.fetchTrandingGifs()
+    }
     window.addEventListener('scroll', handleScroll)
     watch (gifStore, (newVal) => {
       gifs.value = newVal.gifs
