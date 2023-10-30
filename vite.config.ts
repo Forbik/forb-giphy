@@ -12,7 +12,7 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineConfig({
   base: '/forb-giphy/',
   optimizeDeps: {
-    // exclude: ['vuetify'],
+    exclude: ['vuetify'],
   },
   plugins: [
     vue({

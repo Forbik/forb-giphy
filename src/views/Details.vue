@@ -32,12 +32,7 @@
         </p>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="12">
-        <h3>Random GIFs</h3>
-        <Slider />
-      </v-col>
-    </v-row>
+    <Slider />
   </v-container>
   <v-container v-else>
     <v-progress-linear indeterminate :height="2"></v-progress-linear>
