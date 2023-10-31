@@ -1,8 +1,8 @@
 <template>
   <v-app-bar flat dense>
     <v-container>
-      <v-row>
-        <v-col cols="4" sm="3" md="4" lg="3" class="d-flex align-center">
+      <div class="d-flex">
+        <div style="width: 100px;">
           <v-btn
             v-if="isHomePage"
             variant="text"
@@ -26,8 +26,8 @@
 
             Back
           </v-btn>
-        </v-col>
-        <v-col>
+        </div>
+        <div class="mx-5" style="width: 100%;">
           <v-text-field
             v-model="searchQuery"
             @input="handleSearch"
@@ -39,30 +39,51 @@
             single-line
             hide-details
           ></v-text-field>
-        </v-col>
-      </v-row>
+        </div>
+        <div style="width: 48px;">
+          <v-btn
+            variant="tonal"
+            height="44"
+            rounded="lg"
+            icon="mdi-theme-light-dark"
+            @click="toggleTheme"
+          />
+        </div>
+      </div>
     </v-container>
   </v-app-bar>
 </template>
 
 <script lang="ts" setup>
   import { ref, watch, onUnmounted } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
+  import { useTheme } from 'vuetify'
 
   import { useGifStore } from '../../store/giphy'
 
   const gifStore = useGifStore()
   const searchQuery = ref(gifStore.searchQuery)
   const route = useRoute()
+  const router = useRouter()
   const isHomePage = ref(route.path === '/')
-  let timeoutId: ReturnType<typeof setTimeout>
+  const theme = useTheme()
 
+  let timeoutId: ReturnType<typeof setTimeout>
+  function toggleTheme () {
+    theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+  }
   watch(
     () => route.path,
     (newPath) => {
       isHomePage.value = newPath === '/'
     }
   )
+
+  watch(() => searchQuery.value, (newVal) => {
+    if (newVal === null) {
+      gifStore.fetchTrandingGifs()
+    }
+  })
 
   watch(() => gifStore.searchQuery, (newValue) => {
     searchQuery.value = newValue
@@ -78,6 +99,7 @@
   }
   const handleSearch = debounce((query: string) => {
     if (query && searchQuery.value.length > 0) {
+      if(!isHomePage.value) { goToHome() }
       gifStore.setSearchQuery(searchQuery.value)
       gifStore.searchGifs(searchQuery.value)
     } else {
@@ -88,6 +110,10 @@
   const clearSearchQuery = () => {
     gifStore.fetchTrandingGifs()
     return gifStore.setSearchQuery('')
+  }
+
+  const goToHome = () => {
+    router.push({ path: '/' })
   }
 
   onUnmounted(() => {
